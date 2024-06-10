@@ -1,31 +1,22 @@
 const Sequelize = require('sequelize');
-const sequelize = require('./index');
-const User = require('./User');
-const Post = require('./Post');
-const Comment = require('./comment');
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
 
-User.hasMany(Post, {
-    foreignKey: 'user_id',
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+const db = {
+  User: require('./User')(sequelize, Sequelize.DataTypes),
+  Post: require('./Post')(sequelize, Sequelize.DataTypes),
+  Comment: require('./comment')(sequelize, Sequelize.DataTypes)
+};
+
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
 });
 
-Post.belongsTo(User, {
-    foreignKey: 'user_id',
-});
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-Comment.belongsTo(User, {
-    foreignKey: 'user_id',
-});
-
-Comment.belongsTo(Post, {
-  foreignKey: 'post_id',
-});
-
-User.hasMany(Comment, {
-  foreignKey: 'user_id',
-});
-
-Post.hasMany(Comment, {
-  foreignKey: 'post_id',
-});
-
-module.exports = { User, Post, Comment, sequelize };
+module.exports = db;

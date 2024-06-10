@@ -1,9 +1,16 @@
 {
     "development": {
-      "username": "process.env.DB_USER",
-      "password": "process.env.DB_PASSWORD",
-      "database": "process.env.DB_NAME",
+      "username": "your_database_username",
+      "password": "your_database_password",
+      "database": "your_database_name",
       "host": "127.0.0.1",
+      "dialect": "postgres"
+    },
+    "production": {
+      "username": "your_database_username",
+      "password": "your_database_password",
+      "database": "your_database_name",
+      "host": "your_database_host",
       "dialect": "postgres"
     }
   }
